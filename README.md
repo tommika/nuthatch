@@ -176,3 +176,8 @@ Adding additional executables
 To add a new executable, simply create a C source file with name ending in `-main.c` in the `./src` directory.
 For example, `myexec-main.c`.
 
+
+Notes
+-----
+
+\* The nuthatch icon image is AI-generated using [Google Gemini](https://gemini.google.com/)
