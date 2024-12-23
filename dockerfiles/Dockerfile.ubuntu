@@ -1,0 +1,30 @@
+ARG BASE_IMG=ubuntu:18.04
+
+FROM ${BASE_IMG} as build
+
+RUN apt-get -y update
+RUN apt-get -y install \
+    build-essential \
+    libssl-dev \
+    valgrind
+
+COPY Makefile ./Makefile
+COPY src ./src
+COPY web ./web
+
+RUN make build test TEST_ARGS=--debug
+
+FROM ${BASE_IMG}
+
+WORKDIR /opt/websocket
+
+# Install executable
+COPY --from=build build/server-main .
+RUN chmod +x ./server-main
+
+# Install web-client files
+COPY --from=build web web
+
+ENV SERVER_OPTS=""
+ENV SERVER_PORT=8080
+CMD ./server-main $SERVER_OPTS $SERVER_PORT

@@ -1,0 +1,82 @@
+<!--
+Copyright (c) 2024 Thomas Mikalsen. Subject to the MIT License 
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <title>WebSocket Client</title>
+  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+  <script type="text/javascript" src="ws_client.js"></script>
+</head>
+
+<body>
+  <b>Websocket Client</b>
+  <br>
+  Message:
+  <div><textarea id='ta-message'></textarea></div>
+  <button id="btn-send" type="button" disable="true">Send</button></p>
+  <hr>
+  <div>Server Status: <b><span id='status'></span></b></div>
+  <br>
+  <div>Last message from server:<br>
+    <span id='message-received'></span>
+  </div>
+  <script type="text/javascript">
+    var ws = null; // WebSocket used to communicate with server
+    function status(str) {
+      $("#status").html(str);
+    }
+
+    function connect() {
+      if(ws!=null) {
+        // already connected
+        return;
+      }
+      status("Connecting to server...");
+      ws = ws_create();
+      ws.onopen = function(evt) {
+        console.log("ws::onopen:",evt);
+        status("Connected");
+      };
+      ws.onerror = function(evt) {
+        console.log("ws::onerror:",evt);
+        status("Error connecting to server");
+        retry_connect(5);
+      };
+      ws.onclose = function(evt) {
+        console.log("ws::onclose:",evt);
+        if(ws) {
+          status("Connection closed by server");
+        }
+        retry_connect(5);
+      };     
+      ws.onmessage = function(evt) {
+        console.log("ws::onmessage:",evt);
+        $("#message-received").html(evt.data);
+      }
+    }
+
+    function retry_connect(seconds) {
+      if(ws) {
+        ws.close();
+      }
+      ws = null;
+      setTimeout(connect, seconds*1000);
+    }
+
+    // The following function is run once the DOM is loaded
+    $(function () {
+      var btn_send = $("#btn-send");
+      connect();
+      btn_send.click(function() {
+        var sent = ws!=null && ws_send_message(ws,$("#ta-message").val());
+        if(!sent) {
+          status("Failed to send message to server");
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

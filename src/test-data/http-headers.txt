@@ -1,0 +1,8 @@
+Content-Length:2112
+This is Bogus Header Line
+Header-no-ows:NoOptionalWhiteSpace
+Header-ows:    OptionalWhiteSpace  
+
+Ignored-1:Should be ignored
+Ignored-2:Should be ignored
+

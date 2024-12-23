@@ -1,0 +1,6 @@
+GET /index.html HTTP/1.2
+
+Expect: 100-continue
+Content-Length: 4
+
+2112
