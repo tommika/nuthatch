@@ -155,7 +155,7 @@ or go to [http://localhost:8088/](http://localhost:8088/).
 
 The server can also be built and run as a docker container:
 ```
-make docker-start
+make docker-run
 ```
 
 or run in the background
